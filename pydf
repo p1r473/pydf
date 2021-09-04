@@ -464,7 +464,7 @@ def get_row_mp(mp):
             if j[0] in ['size', 'used', 'perc', 'avail', 'bar']:
                 if rdonly:
                     current_colour = readonly_fs_colour
-                if perc > FULL_THRESH:
+                elif perc > FULL_THRESH:
                     current_colour = full_fs_colour
                 elif perc > FILL_THRESH:
                     current_colour = filled_fs_colour
