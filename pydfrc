@@ -89,7 +89,7 @@ FULL_THRESH = 99.0
 
 # filesystem filled up over this limit (in percents) is displayed
 # with filled_fs_colour (to show it is dangerously filled up)
-FILL_THRESH = 75.0
+FILL_THRESH = 95.0
 
 # Format used to display information: (keyword, size, justify).
 # keyword - one of 'fs' 'fstype' 'size' 'used' 'avail' 'perc' 'bar' 'on'.
