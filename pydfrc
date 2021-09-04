@@ -43,31 +43,30 @@
 normal_colour = 'default'
 
 # colour of the header
-header_colour = 'yellow'
+header_colour = 'white'
 
 # colour for local filesystems
-local_fs_colour = 'default'
+local_fs_colour = 'white'
 
 # colour for remote filesystems (such as nfs, samba, afs....)
 remote_fs_colour = 'green'
 
 # colour for special filesystems (such as proc, pty)
-special_fs_colour = 'blue'
+special_fs_colour = 'magenta'
 
 # colour for readonly mounted filesystems
 readonly_fs_colour = 'cyan'
 
-# colour for filesystems with usage > FILL_THRESH
-filled_fs_colour = 'red'
-
 # colour for filesystems with usage > FULL_THRESH
-full_fs_colour = 'on_red', 'green', 'blink'
+full_fs_colour = 'on_red', 'black'
+
+# colour for filesystems with usage > FILL_THRESH
+filled_fs_colour = 'on_yellow', 'black'
 
 # custom device names - not implemented yet
 #custom_devices_colour = {
 #  '/dev/loop' : ('green', 'blink')
 #}
-
 
 # default format for displaying sizes "-h" or "-H" or "-m" or "-k" or "--blocks"
 sizeformat = "-h"
@@ -84,13 +83,13 @@ column_separator_colour = 'none'
 # real number in between - stretch by this ratio of free space
 stretch_screen = 0.3
 
-# filesystem filled up over this limit (in percents) is displayed
-# with filled_fs_colour (to show it is dangerously filled up)
-FILL_THRESH = 95.0
-
 # filesystem filled up over this limit is displayed with 
 # full_fs_colour (to show it is FULL)
 FULL_THRESH = 99.0
+
+# filesystem filled up over this limit (in percents) is displayed
+# with filled_fs_colour (to show it is dangerously filled up)
+FILL_THRESH = 75.0
 
 # Format used to display information: (keyword, size, justify).
 # keyword - one of 'fs' 'fstype' 'size' 'used' 'avail' 'perc' 'bar' 'on'.
@@ -104,18 +103,18 @@ FULL_THRESH = 99.0
 
 
 #format = [    
-#            ('fs', 15, "l"), ('size', 9, "r"), 
+#            ('fs', 15, "l"), ('on', 16, "l"), ('size', 9, "r"), 
 #            ('used', 9, "r"), ('avail', 9, "r"), ('perc', 5, "r"),
-#            ('bar', 8, "l"), ('on', 16, "l")
+#            ('bar', 8, "l")
 #         ]
 
 # this is somewhat conservative
 # use fixed width for everything, since you want it readable
 # only the bar is specified by percentage, because you want it dynamic
 format = [    
-            ('fs', 10, "l"), ('size', 5, "r"), 
+            ('fs', 10, "l"), ('on', 11, "l"), ('size', 5, "r"), 
             ('used', 5, "r"), ('avail', 5, "r"), ('perc', 5, "r"),
-            ('bar', 0.1, "l"), ('on', 11, "l")
+            ('bar', 0.1, "l")
          ]
 
 
@@ -128,6 +127,9 @@ bar_fillchar = '.'
 # hide 'mount --bind' binds?
 hidebinds = True
 
+# hide bars?
+hidebars = True
+
 # list of files to try to get mount information from
 # on normal linux systems only /etc/mtab or /proc/mounts make sense
 mountfile = ['/etc/mtab', '/etc/mnttab', '/proc/mounts']
@@ -136,4 +138,3 @@ mountfile = ['/etc/mtab', '/etc/mnttab', '/proc/mounts']
 # possible values: bsize, frsize, auto
 # auto means frsize if running on Linux, otherwise bsize
 statvfs_block = 'auto'
-
