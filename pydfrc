@@ -43,7 +43,7 @@
 normal_colour = 'default'
 
 # colour of the header
-header_colour = 'white'
+header_colour = 'yellow'
 
 # colour for local filesystems
 local_fs_colour = 'white'
