@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
 import sys, os, re, string, struct, unicodedata
 from optparse import OptionParser
@@ -32,19 +32,22 @@ except TypeError:
     str_center = lambda x, y, z: string.center (x, y).replace(' ', z)
 
 class Bar:
-    def __init__(self, percentage=0, width=2, header=False, psize=0.0):
+    def __init__(self, percentage=0, width=2, header=False, psize=0.0, hidebars=False):
         self.percentage = percentage
         self.width = width
         self.header = header
         self.psize = psize
+        self.hidebars = hidebars
+
 
     def __len__(self):
         return self.width
 
     def __str__(self):
         return self.format(self, 'l')
-
     def format(self, pos, max_psize=None):
+        if self.hidebars:
+            return ''
         if self.header:
             return ' '*self.width
         if max_psize:
@@ -165,6 +168,7 @@ column_separator = ' '
 column_separator_colour = 'none'
 row_separator = ''
 hidebinds = True
+hidebars = True
 
 stretch_screen = 0.3
 
@@ -173,13 +177,11 @@ do_total_sum = False
 FILL_THRESH = 95.0
 FULL_THRESH = 99.0
 
-
 format = [
             ('fs', 10, "l"), ('size', 5, "r"), 
             ('used', 5, "r"), ('avail', 5, "r"), ('perc', 4, "r"),
             ('bar', 0.1, "l"), ('on', 11, "l")
          ]
-
 
 barchar = '#'
 bar_fillchar = '.'
@@ -189,23 +191,6 @@ mountfile = ['/etc/mtab', '/etc/mnttab', '/proc/mounts']
 statvfs_block = 'auto'
 
 #end of default definitions
-
-# read configuration file
-for conffile in ["/etc/pydfrc", os.environ['HOME']+"/.pydfrc"]:
-    if os.path.isfile(conffile):
-        exec(compile(open(conffile).read(), conffile, 'exec'))
-
-
-header = {
-          'fs'     : "Filesystem",
-          'size'   : "Size",
-          'used'   : "Used",
-          'avail'  : "Avail",
-          'on'     : "Mounted on",
-          'fstype' : "Type",
-          'perc'   : "Use%",
-          'bar'    :  Bar(header=True),
-         }
 
 def sanitize_output(s):
     "sanitize nonprintable characters for printing"
@@ -430,6 +415,7 @@ def get_row_mp(mp):
             avail_f = myformat(inodes_avail, sizeformat, 1)
             try:
                 perc = round(100.*inodes_used/inodes_size, 1)
+                #perc_f = str(perc)
                 perc_f = "%2.1f" % perc
             except ZeroDivisionError:
                 perc = 0
@@ -441,6 +427,7 @@ def get_row_mp(mp):
             avail_f = myformat(avail, sizeformat, fs_blocksize)
             try:
                 perc = round(100.*used/size, 1)
+                #perc_f = str(perc)
                 perc_f = "%2.1f" % perc
             except ZeroDivisionError:
                 perc = 0
@@ -482,7 +469,7 @@ def get_row_mp(mp):
                 elif perc > FILL_THRESH:
                     current_colour = filled_fs_colour
             if j[0]=='bar':
-                info['bar'] = Bar(perc/100., width, psize=psize)
+                info['bar'] = Bar(perc/100., width, psize=psize, hidebars=hidebars)
 
             text = info[j[0]]
             # if there are control or invalid unicode characters in mountpoint names
@@ -512,7 +499,7 @@ def is_special_fs(fs):
     "test if fs (as type) is a special one"
     "in addition, a filesystem is special if it has number of blocks equal to 0"
     fs = fs.lower()
-    return fs in [ "tmpfs", "devpts", "devtmpfs", "proc", "sysfs", "usbfs", "devfs", "fdescfs", "linprocfs", "squashfs", "ecryptfs" ]
+    return fs in [ "tmpfs", "devpts", "devtmpfs", "proc", "sysfs", "usbfs", "devfs", "fdescfs", "linprocfs", "squashfs", "ecryptfs"]
 
 def get_table(mps):
     "table is a list of rows"
@@ -636,7 +623,7 @@ parser.add_option("-v", "--version", action="version", help="show version")
 
 parser.add_option("-a", "--all",
       action="store_true", dest="show_all", default=False,
-      help="include filesystems having 0 blocks")
+      help="include special filesystems, or filesystems having 0 blocks")
 parser.add_option("-h", "--human-readable",
       action="store_const", const='-h', dest="sizeformat",
       help="print sizes in human readable format (e.g., 1K 234M 2G)")
@@ -680,9 +667,17 @@ Use /proc/mounts when /etc/mtab is corrupted or inaccessible
 parser.add_option("-B", "--show-binds",
      action="store_false", dest="hidebinds", default=hidebinds,
      help="show 'mount --bind' mounts")
+parser.add_option("-R", "--show-bars",
+     action="store_false", dest="hidebars", default=hidebars,
+     help="show bars")
 parser.add_option("-i", "--inodes",
      action="store_true", dest="inodes", default=False,
      help="show inode instead of block usage")
+
+# read configuration file
+for conffile in ["/etc/pydfrc", os.environ['HOME']+"/.pydfrc"]:
+    if os.path.isfile(conffile):
+        exec(compile(open(conffile).read(), conffile, 'exec'))
 
 (options, args) = parser.parse_args()
 
@@ -690,6 +685,21 @@ blocksize = options.blocksize
 allfss = options.show_all
 localonly = options.local_only
 hidebinds = options.hidebinds
+hidebars = options.hidebars
+
+header = {
+          'fs'     : "Filesystem",
+          'size'   : "Size",
+          'used'   : "Used",
+          'avail'  : "Avail",
+          'on'     : "Mounted on",
+          'fstype' : "Type",
+          'perc'   : "Use%",
+          'bar'    :  Bar(header=True, hidebars=hidebars),
+         }
+
+
+
 inodes = options.inodes
 if inodes:
     header["size"] = "Nodes"
