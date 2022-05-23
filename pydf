@@ -155,9 +155,9 @@ colours = {
 
 normal_colour = 'default'
 header_colour = 'yellow'
-local_fs_colour = 'default'
+local_fs_colour = 'white'
 remote_fs_colour = 'green'
-special_fs_colour = 'blue'
+special_fs_colour = 'magenta'
 readonly_fs_colour = 'cyan'
 filled_fs_colour = 'red'
 full_fs_colour = 'on_red'
@@ -254,7 +254,7 @@ def myformat(number, sizeformat, fs_blocksize):
     if sizeformat == "-k":
         sn = round(size/1024.)
         sn = int(sn)
-        return str(sn) + "k"
+        return str(sn) + "K"
     elif sizeformat == "-m":
         sn = round(size/(1024.*1024))
         sn = int(sn)
@@ -415,7 +415,7 @@ def get_row_mp(mp):
             avail_f = myformat(inodes_avail, sizeformat, 1)
             try:
                 perc = round(100.*inodes_used/inodes_size, 1)
-                #perc_f = str(perc)
+                perc_f = str(perc)
                 perc_f = "%2.1f" % perc
             except ZeroDivisionError:
                 perc = 0
@@ -426,8 +426,8 @@ def get_row_mp(mp):
             used_f = myformat(used, sizeformat, fs_blocksize)
             avail_f = myformat(avail, sizeformat, fs_blocksize)
             try:
-                #perc = round(100.*used/size, 1)
-                perc = int(round(100.*used/size, 0))  # round to nearest integer
+                perc = round(100.*used/size, 1)
+                #perc = int(round(100.*used/size, 0))  # round to nearest integer
                 #perc_f = str(perc) + "%"
                 perc_f = "%2.1f" % perc
             except ZeroDivisionError:
@@ -501,8 +501,7 @@ def is_special_fs(fs):
     "in addition, a filesystem is special if it has number of blocks equal to 0"
     fs = fs.lower()
     #log2ram is tmpfs
-    #overlay
-    return fs in ["devpts", "devtmpfs", "proc", "sysfs", "usbfs", "devfs", "fdescfs", "linprocfs", "squashfs", "ecryptfs"]
+    return fs in ["tmpfs", "devpts", "devtmpfs", "proc", "sysfs", "usbfs", "devfs", "fdescfs", "linprocfs", "squashfs", "ecryptfs", "overlay"]
 
 def get_table(mps):
     "table is a list of rows"
