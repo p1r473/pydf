@@ -231,7 +231,7 @@ def hfnum(size, base):
         units = [""]
     else:
         units = ["B"]
-    units += ["k", "M", "G", "T", "P", "Z", "Y"]
+    units += ["K", "M", "G", "T", "P", "Z", "Y"]
     power = int(log(size)/log(base))
     if power < 0:
         power = 0
