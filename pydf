@@ -428,8 +428,8 @@ def get_row_mp(mp):
             try:
                 perc = round(100.*used/size, 1)
                 #perc = int(round(100.*used/size, 0))  # round to nearest integer
-                #perc_f = str(perc) + "%"
-                perc_f = "%2.1f" % perc
+                perc_f = str(perc)
+                perc_f = "%2.1f" % perc # + "%"
             except ZeroDivisionError:
                 perc = 0
                 perc_f = '-'
