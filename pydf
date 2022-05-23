@@ -254,7 +254,7 @@ def myformat(number, sizeformat, fs_blocksize):
     if sizeformat == "-k":
         sn = round(size/1024.)
         sn = int(sn)
-        return str(sn) + "K"
+        return str(sn) + "k"
     elif sizeformat == "-m":
         sn = round(size/(1024.*1024))
         sn = int(sn)
