@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#!/usr/bin/python3
 
 import sys, os, re, string, struct, unicodedata
 from optparse import OptionParser
@@ -254,15 +254,15 @@ def myformat(number, sizeformat, fs_blocksize):
     if sizeformat == "-k":
         sn = round(size/1024.)
         sn = int(sn)
-        return str(sn)
+        return str(sn) + "K"
     elif sizeformat == "-m":
         sn = round(size/(1024.*1024))
         sn = int(sn)
-        return str(sn)
+        return str(sn) + "M"
     elif sizeformat == "-g":
         sn = round(size/(1024.*1024*1024))
         sn = int(sn)
-        return str(sn)
+        return str(sn) + "G"
     elif sizeformat == "-h":
         return hfnum(size, 1024)
     elif sizeformat == "-H":
@@ -426,8 +426,9 @@ def get_row_mp(mp):
             used_f = myformat(used, sizeformat, fs_blocksize)
             avail_f = myformat(avail, sizeformat, fs_blocksize)
             try:
-                perc = round(100.*used/size, 1)
-                #perc_f = str(perc)
+                #perc = round(100.*used/size, 1)
+                perc = int(round(100.*used/size, 0))  # round to nearest integer
+                #perc_f = str(perc) + "%"
                 perc_f = "%2.1f" % perc
             except ZeroDivisionError:
                 perc = 0
@@ -500,7 +501,8 @@ def is_special_fs(fs):
     "in addition, a filesystem is special if it has number of blocks equal to 0"
     fs = fs.lower()
     #log2ram is tmpfs
-    return fs in ["devpts", "devtmpfs", "proc", "sysfs", "usbfs", "devfs", "fdescfs", "linprocfs", "squashfs", "ecryptfs" ]
+    #overlay
+    return fs in ["devpts", "devtmpfs", "proc", "sysfs", "usbfs", "devfs", "fdescfs", "linprocfs", "squashfs", "ecryptfs"]
 
 def get_table(mps):
     "table is a list of rows"
