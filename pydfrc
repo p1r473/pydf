@@ -69,7 +69,7 @@ filled_fs_colour = 'on_yellow', 'black'
 #}
 
 # default format for displaying sizes "-h" or "-H" or "-m" or "-k" or "--blocks"
-sizeformat = "-g"
+sizeformat = "-h"
 
 # string used to separace columns in the table
 column_separator = ' '
